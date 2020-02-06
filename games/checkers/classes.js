@@ -21,34 +21,47 @@ let newBoard = [
 ];
 
 class Board {
-  constructor (){
-    let places = [];
-    let pieces = [];
+  constructor () {
+    this.places = [];
+    this.pieces = [];
   }
 
-  addPiece(piece){
+  addPiece(piece) {
     this.pieces.push(piece);
+  }
+
+  addPlace(place) {
+    this.places.push(place);
   }
 }
 
-
-class Piece {
-  constructor(name, color, row, column){
+class Checker {
+  constructor(name, color, row = undefined, column = undefined){
     this.name = name;
     this.color = color;
     this.row = row;
     this.column = column;
+    this.isKing = false;
+  }
+
+  kingMe() {
+    this.isKing = true;
   }
 }
 
-let R1 = new Piece('R1', 'red', 1, 2);
-console.log(R1);
-
 class Place {
-  constructor(row, column, color = undefined) {
+  constructor(row, column, piece = undefined) {
+    this.name = `${row},${column}`;
     this.row = row;
     this.column = column;
     this.occupied = false;
-    this.color = color;
+    this.piece = piece;
+
   }
 }
+
+module.exports = {
+  Place: Place,
+  Checker: Checker,
+  Board: Board,
+};
