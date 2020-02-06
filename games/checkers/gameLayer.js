@@ -40,6 +40,13 @@ function endGame() {
 
 }
 
+function isValidMove() {
+  if(){
+
+  }
+}
+
+//test
 let board = createNewBoard();
 printBoard(board);
 move('player', 'B10', 'C3', board);
