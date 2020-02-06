@@ -1,7 +1,8 @@
 let createNewBoard = require('./createNewBoard');
 let board = createNewBoard();
 function printBoard(board) {
-  console.log('-------------------------------------------------');
+  console.log('    A     B     C     D     E     F     G     H')
+  console.log('  ------------------------------------------------');
   for (let i = 0; i < 8; i++) {
     let row = [];
     for (let place of board.places) {
@@ -13,8 +14,7 @@ function printBoard(board) {
         }
       }
     }
-    console.log('| ' + row.join(' | ') + ' |');
-    console.log('-------------------------------------------------');
+    console.log(i + ' | ' + row.join(' | ') + ' |');
+    console.log('  ------------------------------------------------');
   }
 }
-printBoard(board);

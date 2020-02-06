@@ -60,7 +60,6 @@ function createNewBoard() {
   return board;
 }
 
-let board = createNewBoard();
 
 
 module.exports = createNewBoard
