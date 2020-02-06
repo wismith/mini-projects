@@ -20,6 +20,17 @@ let newBoard = [
     ['_', ' ', '_', ' ', '_',' ','_', ' ']
 ];
 
+let letterDict = {
+  0: 'A',
+  1: 'B',
+  2: 'C',
+  3: 'D',
+  4: 'E',
+  5: 'F',
+  6: 'G',
+  7: 'H',
+}
+
 class Board {
   constructor () {
     this.places = [];
@@ -51,7 +62,7 @@ class Checker {
 
 class Place {
   constructor(row, column, piece = undefined) {
-    this.name = `${row},${column}`;
+    this.name = `${letterDict[column]}${row}`;
     this.row = row;
     this.column = column;
     this.occupied = false;
