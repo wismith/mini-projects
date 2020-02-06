@@ -17,4 +17,5 @@ function printBoard(board) {
     console.log('-------------------------------------------------');
   }
 }
-printBoard(board);
+
+module.exports = printBoard
