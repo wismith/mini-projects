@@ -33,7 +33,8 @@ function playGame(game){
         take: function(piece, target) {
           take(game.player1, piece, target, game.board);
           return true;
-        }
+        },
+        cancel: function() {return true},
       });
     }
     if (game.turn % 2 === 0) {
@@ -48,7 +49,8 @@ function playGame(game){
         take: function(piece, target) {
           take(game.player2, piece, target, game.board);
           return true;
-        }
+        },
+        cancel: function() {return true},
       });
     }
 
@@ -146,7 +148,7 @@ function take(player, pieceName, target, board) {
   let victimPiece = board.pieces.filter(piece => piece.name === target)[0];
   let oldPlace = board.places.filter(place => place.row === myPiece.row && place.column === myPiece.column)[0];
   let victimPlace = board.places.filter(place => place.row === victimPiece.row && place.column === victimPiece.column)[0];
-  let landingPlace = board.places.filter(place => (place.row === victimPiece.row + (victimPiece.row - myPiece.row) && place.column === victimPiece.column + (victimPiece.column - myPiece.column)))[0];
+  let landingPlace = board.places.filter(place => (place.row === (victimPlace.row + (victimPlace.row - oldPlace.row)) && place.column === (victimPlace.column + (victimPlace.column - oldPlace.column))))[0];
 
 
   if (victimPiece.color === myPiece.color) {
@@ -156,8 +158,9 @@ function take(player, pieceName, target, board) {
   if(myPiece.color !== player.color) {
     throw new Error('You can\'t move that piece!');
   }
-
-  console.log(landingPlace);
+  console.log(victimPlace);
+  console.log(oldPlace);
+  console.log(victimPlace.row + (victimPlace.row - oldPlace.row), victimPlace.column + (victimPlace.column - oldPlace.column));
   if (!landingPlace.occupied) {
     if (myPiece.color === 'red' && landingPlace.row === 0) {
       myPiece.kingMe();
@@ -169,13 +172,13 @@ function take(player, pieceName, target, board) {
     landingPlace.piece = myPiece;
     landingPlace.occupied = true;
 
+    myPiece.row = landingPlace.row;
+    myPiece.column = landingPlace.column;
+
     oldPlace.occupied = false;
-    console.log(oldPlace.occupied);
     oldPlace.piece = undefined;
     victimPlace.occupied = false;
-    console.log(victimPlace.occupied);
     victimPlace.piece = undefined;
-    console.log(victimPlace);
 
     if (victimPiece.color === 'red') {
       board.takenPiecesRed.push(victimPiece);
