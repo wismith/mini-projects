@@ -35,6 +35,8 @@ class Board {
   constructor () {
     this.places = [];
     this.pieces = [];
+    this.takenPiecesRed = [];
+    this.takenPiecesBlack = [];
   }
 
   addPiece(piece) {
@@ -77,6 +79,7 @@ class Game {
     this.player1 = player1;
     this.player2 = player2;
     this.turn = turn;
+    this.isFinished = false;
   }
 }
 

@@ -5,34 +5,78 @@ let process = require('process');
 let readlineSync = require('readline-sync');
 
 function startGame() {
-  let player1 = new classes.Player(readlineSync.question('Player 1 Name? '), readlineSync.question('Black or red? '));
-  let player2 = new classes.Player(readlineSync.question('Player 2 Name? '), readlineSync.question('Black or red? '));
-  let game = new classes.Game(createNewBoard(), player1, player2, 1);
-
-
+  let turn = 1;
+  let player1 = new classes.Player(readlineSync.question('Player 1 Name? '), readlineSync.question('Black or red? ').toLocaleLowerCase());
+  let player2 = new classes.Player(readlineSync.question('Player 2 Name? '), readlineSync.question('Black or red? ').toLocaleLowerCase());
+  let game = new classes.Game(createNewBoard(), player1, player2, turn);
+  return game;
 }
 
-let allSpaces = [];
-for(let place of board.places){
-  allSpaces.push(place.name);
-}
+function playGame(game){
 
-let takenPiecesRed = [];
-let takenPiecesBlack = [];
-
-function results(){
-  if(takenPiecesRed.length === 12){
-    let winner = black
+  let allSpaces = [];
+  for(let place of game.board.places){
+    allSpaces.push(place.name);
   }
 
-  if(takenPiecesBlack.length === 12) {
-    endGame();
+  while (!game.isFinished) {
+
+    if (game.turn % 2 !== 0) {
+      printBoard(game.board);
+      console.log(`${game.player1.name}, it's your turn!`);
+      console.log('Usage: <move OR take> <yourPiece> <destination OR targetPiece>');
+      readlineSync.promptCLLoop({
+        move: function(piece, destination) {
+          move(game.player1, piece, destination, game.board);
+          return true;
+        },
+        take: function(piece, target) {
+          take(game.player1, piece, target, game.board);
+          return true;
+        }
+      });
+    }
+    if (game.turn % 2 === 0) {
+      printBoard(game.board);
+      console.log(`${game.player2.name}, it's your turn!`);
+      console.log('Usage: <move OR take> <yourPiece> <destination OR targetPiece>');
+      readlineSync.promptCLLoop({
+        move: function(piece, destination) {
+          move(game.player2, piece, destination, game.board);
+          return true;
+        },
+        take: function(piece, target) {
+          take(game.player2, piece, target, game.board);
+          return true;
+        }
+      });
+    }
+
+    game.turn++;
+
+    if (game.board.takenPiecesBlack.length === 12 || game.board.takenPiecesRed.length === 12) {
+      game.isFinished = true;
+    }
   }
+
+  endGame();
+
 }
 
 
 function move(player, pieceName, newSpot, board) {
-  if(!(allSpaces.includes(newSpot))){
+  // let allSpaces = playGame.allSpaces;
+  // if(!(allSpaces.includes(newSpot))){
+  //   throw new Error('That is not a valid move!');
+  // }
+
+  let newSpotValid = false;
+  for (let place of board.places) {
+    if (place.name === newSpot) {
+      newSpotValid = true;
+    }
+  }
+  if (!newSpotValid) {
     throw new Error('That is not a valid move!');
   }
 
@@ -44,6 +88,11 @@ function move(player, pieceName, newSpot, board) {
 
 
   //checks for valid move
+
+  if(checker.color !== player.color) {
+    throw new Error('You can\'t move that piece!');
+  }
+
   if(!(destination.row !== oldPlace.row && destination.column !== oldPlace.column)){
     throw new Error('That is not a valid move!');
   }
@@ -70,6 +119,8 @@ function move(player, pieceName, newSpot, board) {
 
   if(destination.occupied){
     throw new Error('That is not a valid move!');
+
+
   }
 
   oldPlace.piece = undefined;
@@ -95,14 +146,18 @@ function take(player, pieceName, target, board) {
   let victimPiece = board.pieces.filter(piece => piece.name === target)[0];
   let oldPlace = board.places.filter(place => place.row === myPiece.row && place.column === myPiece.column)[0];
   let victimPlace = board.places.filter(place => place.row === victimPiece.row && place.column === victimPiece.column)[0];
-  let landingPlace = board.places.filter(place => place.row === victimPiece.row + (victimPiece.row - myPiece.row) && place.column === victimPiece.column + (victimPiece.column - myPiece.column))[0];
+  let landingPlace = board.places.filter(place => (place.row === victimPiece.row + (victimPiece.row - myPiece.row) && place.column === victimPiece.column + (victimPiece.column - myPiece.column)))[0];
 
 
   if (victimPiece.color === myPiece.color) {
     throw new Error('You can\'t take your own piece!');
   }
 
+  if(myPiece.color !== player.color) {
+    throw new Error('You can\'t move that piece!');
+  }
 
+  console.log(landingPlace);
   if (!landingPlace.occupied) {
     if (myPiece.color === 'red' && landingPlace.row === 0) {
       myPiece.kingMe();
@@ -115,15 +170,18 @@ function take(player, pieceName, target, board) {
     landingPlace.occupied = true;
 
     oldPlace.occupied = false;
+    console.log(oldPlace.occupied);
     oldPlace.piece = undefined;
     victimPlace.occupied = false;
+    console.log(victimPlace.occupied);
     victimPlace.piece = undefined;
+    console.log(victimPlace);
 
     if (victimPiece.color === 'red') {
-      takenPiecesRed.push(victimPiece);
+      board.takenPiecesRed.push(victimPiece);
     }
     if (victimPiece.color === 'black') {
-      takenPiecesBlack.push(victimPiece);
+      board.takenPiecesBlack.push(victimPiece);
     }
   } else {
     throw new Error('That action won\'t work!');
@@ -143,4 +201,5 @@ function endGame() {
 // take('player', 'B10', 'R3', board);
 // printBoard(board);
 
-startGame();
+let game = startGame();
+playGame(game);
