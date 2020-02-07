@@ -60,11 +60,11 @@ function move(player, pieceName, newSpot, board) {
   }
 
   oldPlace.piece = undefined;
-  console.log(oldPlace);
   oldPlace.occupied = false;
 
   checker.row = destination.row;
   checker.column = destination.column;
+
   destination.occupied = true;
   destination.piece = checker;
 }
@@ -79,4 +79,5 @@ function endGame() {
 
 //test
 printBoard(board);
-move('player', 'B10', 'D1', board);
+move('player', 'B10', 'C3', board);
+printBoard(board);
