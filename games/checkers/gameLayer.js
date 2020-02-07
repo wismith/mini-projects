@@ -69,8 +69,15 @@ function move(player, pieceName, newSpot, board) {
   destination.piece = checker;
 }
 
-function take(player, piece, victim, board) {
+function take(player, pieceName, target, board) {
+  let myPiece = board.pieces.filter(piece => piece.name === pieceName)[0];
+  let victimPiece = board.pieces.filter(piece => piece.name === target)[0];
 
+  if (victimPiece.color === myPiece.color) {
+    throw new Error('You can\'t take your own piece!');
+  }
+
+  let landingPlace =
 }
 
 function endGame() {
