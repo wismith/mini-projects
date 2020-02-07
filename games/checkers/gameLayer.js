@@ -21,17 +21,12 @@ function move(player, pieceName, newSpot, board) {
     throw new Error('That is not a valid move!');
   }
 
-  let checker = board.pieces.filter(function(piece){
-    return piece.name===pieceName}
-  )[0];
+  let checker = board.pieces.filter(piece => piece.name === pieceName)[0];
 
-  let oldPlace = board.places.filter(function(place){
-    return place.row===checker.row && place.column === checker.column;
-  })[0];
+  let oldPlace = board.places.filter(place => place.row === checker.row && place.column === checker.column)[0];
 
-  let destination = board.places.filter(function(place){
-    return place.name===newSpot}
-  )[0];
+  let destination = board.places.filter(place => place.name === newSpot)[0];
+
 
   //checks for valid move
   if(!(destination.row !== oldPlace.row && destination.column !== oldPlace.column)){
@@ -75,18 +70,15 @@ function move(player, pieceName, newSpot, board) {
 function take(player, pieceName, target, board) {
   let myPiece = board.pieces.filter(piece => piece.name === pieceName)[0];
   let victimPiece = board.pieces.filter(piece => piece.name === target)[0];
-  let oldPlace = board.places.filter(function(place){
-    return place.row===myPiece.row && place.column === myPiece.column;
-  })[0];
-  let victimPlace = board.places.filter(function(place){
-    return place.row===victimPiece.row && place.column === victimPiece.column;
-  })[0];
+  let oldPlace = board.places.filter(place => place.row === myPiece.row && place.column === myPiece.column)[0];
+  let victimPlace = board.places.filter(place => place.row === victimPiece.row && place.column === victimPiece.column)[0];
+  let landingPlace = board.places.filter(place => place.row === victimPiece.row + (victimPiece.row - myPiece.row) && place.column === victimPiece.column + (victimPiece.column - myPiece.column))[0];
+
 
   if (victimPiece.color === myPiece.color) {
     throw new Error('You can\'t take your own piece!');
   }
 
-  let landingPlace = board.places.filter(place => place.row === victimPiece.row + (victimPiece.row - myPiece.row) && place.column === victimPiece.column + (victimPiece.column - myPiece.column))[0];
 
   if (!landingPlace.occupied) {
     landingPlace.piece = myPiece;
@@ -114,10 +106,9 @@ function endGame() {
 
 //test
 printBoard(board);
-move('player', 'B10', 'C3', board);
-printBoard(board);
 move('player', 'R3', 'D4', board);
+printBoard(board);
+move('player', 'B10', 'C3', board);
 printBoard(board);
 take('player', 'B10', 'R3', board);
 printBoard(board);
-console.log(takenPiecesRed);
