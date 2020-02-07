@@ -14,6 +14,8 @@ function startGame() {
 
 function playGame(game){
 
+  let winner;
+
   let allSpaces = [];
   for(let place of game.board.places){
     allSpaces.push(place.name);
@@ -21,17 +23,18 @@ function playGame(game){
 
   while (!game.isFinished) {
 
+
     if (game.turn % 2 !== 0) {
       printBoard(game.board);
       console.log(`${game.player1.name}, it's your turn!`);
       console.log('Usage: <move OR take> <yourPiece> <destination OR targetPiece>');
       readlineSync.promptCLLoop({
         move: function(piece, destination) {
-          move(game.player1, piece, destination, game.board);
+          move(game.player1, piece, destination, game);
           return true;
         },
         take: function(piece, target) {
-          take(game.player1, piece, target, game.board);
+          take(game.player1, piece, target, game);
           return true;
         },
         cancel: function() {return true},
@@ -43,112 +46,136 @@ function playGame(game){
       console.log('Usage: <move OR take> <yourPiece> <destination OR targetPiece>');
       readlineSync.promptCLLoop({
         move: function(piece, destination) {
-          move(game.player2, piece, destination, game.board);
+          move(game.player2, piece, destination, game);
           return true;
         },
         take: function(piece, target) {
-          take(game.player2, piece, target, game.board);
+          take(game.player2, piece, target, game);
           return true;
         },
         cancel: function() {return true},
       });
     }
 
-    game.turn++;
+    console.log('taken pieces red: ' + game.board.takenPiecesRed + ' and length is: ' + game.board.takenPiecesRed.length);
+    console.log('taken pieces black: ' + game.board.takenPiecesBlack + ' and length is: ' + game.board.takenPiecesBlack.length);
 
+    game.board.takenPiecesBlack.length = 12;
     if (game.board.takenPiecesBlack.length === 12 || game.board.takenPiecesRed.length === 12) {
       game.isFinished = true;
     }
   }
 
-  endGame();
+  if(game.board.takenPiecesBlack.length === 12) {
+    if (game.player1.color === 'red') {
+      let winner = game.player1;
+    } else {
+      let winner = game.player2;
+    }
+  }
+
+  if(game.board.takenPiecesRed.length === 12) {
+    if (game.player1.color === 'black') {
+      winner = game.player1;
+    } else {
+      winner = game.player2;
+    }
+  }
+
+  endGame(winner.name);
 
 }
 
 
-function move(player, pieceName, newSpot, board) {
+function move(player, pieceName, newSpot, game) {
   // let allSpaces = playGame.allSpaces;
   // if(!(allSpaces.includes(newSpot))){
   //   throw new Error('That is not a valid move!');
   // }
 
+  let error = false;
+
   let newSpotValid = false;
-  for (let place of board.places) {
+  for (let place of game.board.places) {
     if (place.name === newSpot) {
       newSpotValid = true;
     }
   }
   if (!newSpotValid) {
-    throw new Error('That is not a valid move!');
+    error = true;
   }
 
-  let checker = board.pieces.filter(piece => piece.name === pieceName)[0];
+  let checker = game.board.pieces.filter(piece => piece.name === pieceName)[0];
 
-  let oldPlace = board.places.filter(place => place.row === checker.row && place.column === checker.column)[0];
+  let oldPlace = game.board.places.filter(place => place.row === checker.row && place.column === checker.column)[0];
 
-  let destination = board.places.filter(place => place.name === newSpot)[0];
+  let destination = game.board.places.filter(place => place.name === newSpot)[0];
 
 
   //checks for valid move
 
   if(checker.color !== player.color) {
-    throw new Error('You can\'t move that piece!');
+    error = true;
   }
 
   if(!(destination.row !== oldPlace.row && destination.column !== oldPlace.column)){
-    throw new Error('That is not a valid move!');
+    error = true;
   }
 
   if(checker.color === 'black' && checker.isKing === false){
     if(!(destination.row > oldPlace.row)){
-      throw new Error('That is not a valid move!');
+      error = true;
     }
 
     if(Math.abs(destination.row - oldPlace.row) > 1 || Math.abs(destination.column - oldPlace.column) > 1){
-      throw new Error('That is not a valid move!');
+      error = true;
     }
   }
 
   if(checker.color === 'red' && checker.isKing === false){
     if(!(destination.row < oldPlace.row)){
-      throw new Error('That is not a valid move!');
+      error = true;
     }
 
     if(Math.abs(oldPlace.row - destination.row) > 1 || Math.abs(oldPlace.column - destination.column)> 1){
-      throw new Error('That is not a valid move!');
+      error = true;
     }
   }
 
   if(destination.occupied){
-    throw new Error('That is not a valid move!');
-
-
+    error = true;
   }
 
-  oldPlace.piece = undefined;
-  oldPlace.occupied = false;
+  if (!error) {
+    oldPlace.piece = undefined;
+    oldPlace.occupied = false;
 
-  checker.row = destination.row;
-  checker.column = destination.column;
+    checker.row = destination.row;
+    checker.column = destination.column;
 
-  if (checker.color === 'red' && destination.row === 0) {
-    checker.kingMe();
+    if (checker.color === 'red' && destination.row === 0) {
+      checker.kingMe();
+    }
+    if (checker.color === 'black' && destination.row === 7) {
+      checker.kingMe();
+    }
+    destination.occupied = true;
+    destination.piece = checker;
+    game.turn++;
+
+  } else {
+    console.log('That is an invalid move!');
   }
-  if (checker.color === 'black' && destination.row === 7) {
-    checker.kingMe();
-  }
-  destination.occupied = true;
-  destination.piece = checker;
 
 
 }
 
-function take(player, pieceName, target, board) {
-  let myPiece = board.pieces.filter(piece => piece.name === pieceName)[0];
-  let victimPiece = board.pieces.filter(piece => piece.name === target)[0];
-  let oldPlace = board.places.filter(place => place.row === myPiece.row && place.column === myPiece.column)[0];
-  let victimPlace = board.places.filter(place => place.row === victimPiece.row && place.column === victimPiece.column)[0];
-  let landingPlace = board.places.filter(place => (place.row === (victimPlace.row + (victimPlace.row - oldPlace.row)) && place.column === (victimPlace.column + (victimPlace.column - oldPlace.column))))[0];
+function take(player, pieceName, target, game) {
+  let myPiece = game.board.pieces.filter(piece => piece.name === pieceName)[0];
+  let victimPiece = game.board.pieces.filter(piece => piece.name === target)[0];
+  let oldPlace = game.board.places.filter(place => place.row === myPiece.row && place.column === myPiece.column)[0];
+  let victimPlace = game.board.places.filter(place => place.row === victimPiece.row && place.column === victimPiece.column)[0];
+  let landingPlace = game.board.places.filter(place => (place.row === (victimPlace.row + (victimPlace.row - oldPlace.row)) && place.column === (victimPlace.column + (victimPlace.column - oldPlace.column))))[0];
 
 
   if (victimPiece.color === myPiece.color) {
@@ -181,18 +208,19 @@ function take(player, pieceName, target, board) {
     victimPlace.piece = undefined;
 
     if (victimPiece.color === 'red') {
-      board.takenPiecesRed.push(victimPiece);
+      game.board.takenPiecesRed.push(victimPiece);
     }
     if (victimPiece.color === 'black') {
-      board.takenPiecesBlack.push(victimPiece);
+      game.board.takenPiecesBlack.push(victimPiece);
     }
+    game.turn++;
   } else {
     throw new Error('That action won\'t work!');
   }
 }
 
-function endGame() {
-
+function endGame(winner) {
+  console.log("Good job, " + winner + ", you won!");
 }
 
 //test
