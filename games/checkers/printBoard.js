@@ -1,22 +1,25 @@
 let createNewBoard = require('./createNewBoard');
 let board = createNewBoard();
 function printBoard(board) {
-  console.log('    A     B     C     D     E     F     G     H')
-  console.log('  ------------------------------------------------');
+  console.log('     A      B       C      D      E      F       G      H')
+  console.log('  ----------------------------------------------------------');
   for (let i = 0; i < 8; i++) {
     let row = [];
     for (let place of board.places) {
       if (place.row === i) {
         if (place.occupied) {
-          row.push(place.piece.name.padEnd(3));
+          row.push(place.piece.name.padEnd(4));
         } else {
-          row.push(' _ ');
+          row.push(' __ ');
         }
       }
     }
-    console.log(i + ' | ' + row.join(' | ') + ' |');
-    console.log('  ------------------------------------------------');
+    console.log(i + ' |  ' + row.join(' | ') + '  |');
+    console.log('  ----------------------------------------------------------');
   }
 }
+
+board.pieces[0].kingMe();
+printBoard(board);
 
 module.exports = printBoard
