@@ -23,7 +23,6 @@ function playGame(game){
 
   while (!game.isFinished) {
 
-    console.log(game.isFinished);
     if (game.turn % 2 !== 0) {
       printBoard(game.board);
       console.log(`${game.player1.name}, it's your turn!`);
@@ -41,6 +40,7 @@ function playGame(game){
       });
 
       if(game.board.takenPiecesBlack.length === 12) {
+        game.isFinished = true;
         if (game.player1.color === 'red') {
           winner = game.player1;
         } else {
@@ -50,6 +50,7 @@ function playGame(game){
       }
 
       if(game.board.takenPiecesRed.length === 12) {
+        game.isFinished = true;
         if (game.player1.color === 'black') {
           winner = game.player1;
         } else {
@@ -76,6 +77,7 @@ function playGame(game){
       });
 
       if(game.board.takenPiecesBlack.length === 12) {
+        game.isFinished = true;
         if (game.player1.color === 'red') {
           winner = game.player1;
         } else {
@@ -85,6 +87,7 @@ function playGame(game){
       }
 
       if(game.board.takenPiecesRed.length === 12) {
+        game.isFinished = true;
         if (game.player1.color === 'black') {
           winner = game.player1;
         } else {
@@ -116,12 +119,7 @@ function playGame(game){
 
 }
 
-
 function move(player, pieceName, newSpot, game) {
-  // let allSpaces = playGame.allSpaces;
-  // if(!(allSpaces.includes(newSpot))){
-  //   throw new Error('That is not a valid move!');
-  // }
 
   let error = false;
 
@@ -245,8 +243,6 @@ function take(player, pieceName, target, game) {
     if (victimPiece.color === 'black') {
       game.board.takenPiecesBlack.push(victimPiece);
     }
-    console.log('Length of takenPiecesBlack: ', game.board.takenPiecesBlack.length);
-    console.log('Length of takenPiecesRed: ', game.board.takenPiecesRed.length);
 
     game.turn++;
 
@@ -259,15 +255,8 @@ function endGame(winner) {
   console.log("Good job, " + winner.name + ", you won!");
 }
 
-//test
-// printBoard(board);
-// move('player', 'R3', 'D4', board);
-// printBoard(board);
-// move('player', 'B10', 'C3', board);
-// printBoard(board);
-// take('player', 'B10', 'R3', board);
-// printBoard(board);
-
-let game = startGame();
-let winner = playGame(game);
-endGame(winner);
+module.exports = {
+  startGame: startGame,
+  playGame: playGame,
+  endGame: endGame,
+}
