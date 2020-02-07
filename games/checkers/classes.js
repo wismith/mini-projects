@@ -59,6 +59,7 @@ class Checker {
 
   kingMe() {
     this.isKing = true;
+    this.name  = `*${this.name}*`;
   }
 }
 
