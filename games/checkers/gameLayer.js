@@ -1,8 +1,16 @@
 let printBoard = require('./printBoard');
 let classes = require('./classes');
 let createNewBoard = require('./createNewBoard');
+let process = require('process');
+let readlineSync = require('readline-sync');
 
-let board = createNewBoard();
+function startGame() {
+  let player1 = new classes.Player(readlineSync.question('Player 1 Name? '), readlineSync.question('Black or red? '));
+  let player2 = new classes.Player(readlineSync.question('Player 2 Name? '), readlineSync.question('Black or red? '));
+  let game = new classes.Game(createNewBoard(), player1, player2, 1);
+
+
+}
 
 let allSpaces = [];
 for(let place of board.places){
@@ -12,9 +20,16 @@ for(let place of board.places){
 let takenPiecesRed = [];
 let takenPiecesBlack = [];
 
-function startGame() {
+function results(){
+  if(takenPiecesRed.length === 12){
+    let winner = black
+  }
 
+  if(takenPiecesBlack.length === 12) {
+    endGame();
+  }
 }
+
 
 function move(player, pieceName, newSpot, board) {
   if(!(allSpaces.includes(newSpot))){
@@ -63,8 +78,16 @@ function move(player, pieceName, newSpot, board) {
   checker.row = destination.row;
   checker.column = destination.column;
 
+  if (checker.color === 'red' && destination.row === 0) {
+    checker.kingMe();
+  }
+  if (checker.color === 'black' && destination.row === 7) {
+    checker.kingMe();
+  }
   destination.occupied = true;
   destination.piece = checker;
+
+
 }
 
 function take(player, pieceName, target, board) {
@@ -81,6 +104,13 @@ function take(player, pieceName, target, board) {
 
 
   if (!landingPlace.occupied) {
+    if (myPiece.color === 'red' && landingPlace.row === 0) {
+      myPiece.kingMe();
+    }
+    if (myPiece.color === 'black' && landingPlace.row === 7) {
+      myPiece.kingMe();
+    }
+
     landingPlace.piece = myPiece;
     landingPlace.occupied = true;
 
@@ -105,10 +135,12 @@ function endGame() {
 }
 
 //test
-printBoard(board);
-move('player', 'R3', 'D4', board);
-printBoard(board);
-move('player', 'B10', 'C3', board);
-printBoard(board);
-take('player', 'B10', 'R3', board);
-printBoard(board);
+// printBoard(board);
+// move('player', 'R3', 'D4', board);
+// printBoard(board);
+// move('player', 'B10', 'C3', board);
+// printBoard(board);
+// take('player', 'B10', 'R3', board);
+// printBoard(board);
+
+startGame();

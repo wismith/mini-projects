@@ -71,8 +71,26 @@ class Place {
   }
 }
 
+class Game {
+  constructor(board, player1, player2, turn) {
+    this.board = board;
+    this.player1 = player1;
+    this.player2 = player2;
+    this.turn = turn;
+  }
+}
+
+class Player {
+  constructor(name, color) {
+    this.name = name;
+    this.color = color;
+  }
+}
+
 module.exports = {
   Place: Place,
   Checker: Checker,
   Board: Board,
+  Game: Game,
+  Player: Player,
 };
