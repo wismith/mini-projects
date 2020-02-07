@@ -1,7 +1,6 @@
 let printBoard = require('./printBoard');
 let classes = require('./classes');
 let createNewBoard = require('./createNewBoard');
-let process = require('process');
 let readlineSync = require('readline-sync');
 
 function startGame() {
@@ -259,4 +258,12 @@ module.exports = {
   startGame: startGame,
   playGame: playGame,
   endGame: endGame,
+  move: move,
+  take: take,
+}
+
+if (require.main === module) {
+  let game = startGame();
+  let winner = playGame(game);
+  endGame(winner);
 }

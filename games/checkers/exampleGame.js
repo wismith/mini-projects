@@ -1,5 +1,40 @@
+let readlineSync = require('readline-sync');
 let gameLayer = require('./gameLayer');
+let createNewBoard = require('./createNewBoard');
+let classes = require('./classes');
 
-let game = gameLayer.startGame();
+
+let board = createNewBoard();
+let player1 = new classes.Player(readlineSync.question('Player 1 Name? '), 'black');
+let player2 = new classes.Player(readlineSync.question('Player 2 Name? '), 'red');
+let game = new classes.Game(board, player1, player2, 1);
+gameLayer.move(player1, 'B10', 'E3', game);
+gameLayer.move(player2, 'R4', 'F4', game);
+gameLayer.take(player1, 'B10', 'R4', game);
+gameLayer.take(player2, 'R8', 'B10', game);
+gameLayer.move(player1, 'B9', 'C3', game);
+gameLayer.move(player2, 'R1', 'B4', game);
+gameLayer.take(player1, 'B9', 'R1', game);
+gameLayer.move(player2, 'R8', 'E3',game);
+gameLayer.take(player1, 'B11', 'R8', game);
+gameLayer.move(player2, 'R7', 'G5', game);
+gameLayer.take(player1, 'B11', 'R3', game);
+gameLayer.move(player2, 'R6', 'E5', game);
+gameLayer.move(player1, 'B12', 'G3', game);
+gameLayer.move(player2, 'R11', 'D6', game);
+gameLayer.move(player1, 'B12', 'F4', game);
+gameLayer.move(player2, 'R2', 'D4', game);
+gameLayer.move(player1, 'B7', 'D2', game);
+gameLayer.move(player2, 'R2', 'C3', game);
+gameLayer.take(player1, 'B7', 'R2', game);
+gameLayer.move(player2, 'R11', 'C5', game);
+gameLayer.take(player1, 'B12', 'R7', game);
+gameLayer.move(player2, 'R10', 'D6', game);
+gameLayer.move(player1, 'B8', 'F2', game);
+gameLayer.move(player2, 'R6', 'F4', game);
+gameLayer.move(player1, 'B6', 'D2', game);
+gameLayer.move(player2, 'R6', 'E3', game);
+gameLayer.take(player1, 'B8', 'R6', game);
 let winner = gameLayer.playGame(game);
+
 gameLayer.endGame(winner);

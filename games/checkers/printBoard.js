@@ -10,7 +10,7 @@ function printBoard(board) {
         if (place.occupied) {
           row.push(place.piece.name.padEnd(4));
         } else {
-          row.push(' __ ');
+          row.push('    ');
         }
       }
     }
