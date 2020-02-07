@@ -19,7 +19,6 @@ function printBoard(board) {
   }
 }
 
-board.pieces[0].kingMe();
 printBoard(board);
 
 module.exports = printBoard

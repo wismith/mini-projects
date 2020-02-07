@@ -23,7 +23,7 @@ function playGame(game){
 
   while (!game.isFinished) {
 
-
+    console.log(game.isFinished);
     if (game.turn % 2 !== 0) {
       printBoard(game.board);
       console.log(`${game.player1.name}, it's your turn!`);
@@ -39,7 +39,26 @@ function playGame(game){
         },
         cancel: function() {return true},
       });
+
+      if(game.board.takenPiecesBlack.length === 12) {
+        if (game.player1.color === 'red') {
+          winner = game.player1;
+        } else {
+          winner = game.player2;
+        }
+        return winner;
+      }
+
+      if(game.board.takenPiecesRed.length === 12) {
+        if (game.player1.color === 'black') {
+          winner = game.player1;
+        } else {
+          winner = game.player2;
+        }
+        return winner;
+      }
     }
+
     if (game.turn % 2 === 0) {
       printBoard(game.board);
       console.log(`${game.player2.name}, it's your turn!`);
@@ -55,14 +74,26 @@ function playGame(game){
         },
         cancel: function() {return true},
       });
+
+      if(game.board.takenPiecesBlack.length === 12) {
+        if (game.player1.color === 'red') {
+          winner = game.player1;
+        } else {
+          winner = game.player2;
+        }
+        return winner;
+      }
+
+      if(game.board.takenPiecesRed.length === 12) {
+        if (game.player1.color === 'black') {
+          winner = game.player1;
+        } else {
+          winner = game.player2;
+        }
+        return winner;
+      }
     }
 
-    console.log('taken pieces red: ' + game.board.takenPiecesRed + ' and length is: ' + game.board.takenPiecesRed.length);
-    console.log('taken pieces black: ' + game.board.takenPiecesBlack + ' and length is: ' + game.board.takenPiecesBlack.length);
-
-    if (game.board.takenPiecesBlack.length === 12 || game.board.takenPiecesRed.length === 12) {
-      game.isFinished = true;
-    }
   }
 
   if(game.board.takenPiecesBlack.length === 12) {
@@ -81,7 +112,7 @@ function playGame(game){
     }
   }
 
-  endGame(winner.name);
+  return winner;
 
 }
 
@@ -160,7 +191,10 @@ function move(player, pieceName, newSpot, game) {
     }
     destination.occupied = true;
     destination.piece = checker;
+
     game.turn++;
+
+
 
   } else {
     console.log('That is an invalid move!');
@@ -177,16 +211,15 @@ function take(player, pieceName, target, game) {
   let landingPlace = game.board.places.filter(place => (place.row === (victimPlace.row + (victimPlace.row - oldPlace.row)) && place.column === (victimPlace.column + (victimPlace.column - oldPlace.column))))[0];
 
 
+  let error = false;
   if (victimPiece.color === myPiece.color) {
-    throw new Error('You can\'t take your own piece!');
+    error = true;
   }
 
   if(myPiece.color !== player.color) {
-    throw new Error('You can\'t move that piece!');
+    error = true;
   }
-  console.log(victimPlace);
-  console.log(oldPlace);
-  console.log(victimPlace.row + (victimPlace.row - oldPlace.row), victimPlace.column + (victimPlace.column - oldPlace.column));
+
   if (!landingPlace.occupied) {
     if (myPiece.color === 'red' && landingPlace.row === 0) {
       myPiece.kingMe();
@@ -212,14 +245,18 @@ function take(player, pieceName, target, game) {
     if (victimPiece.color === 'black') {
       game.board.takenPiecesBlack.push(victimPiece);
     }
+    console.log('Length of takenPiecesBlack: ', game.board.takenPiecesBlack.length);
+    console.log('Length of takenPiecesRed: ', game.board.takenPiecesRed.length);
+
     game.turn++;
+
   } else {
-    throw new Error('That action won\'t work!');
+    console.log('That action won\'t work!');
   }
 }
 
 function endGame(winner) {
-  console.log("Good job, " + winner + ", you won!");
+  console.log("Good job, " + winner.name + ", you won!");
 }
 
 //test
@@ -232,4 +269,5 @@ function endGame(winner) {
 // printBoard(board);
 
 let game = startGame();
-playGame(game);
+let winner = playGame(game);
+endGame(winner);
