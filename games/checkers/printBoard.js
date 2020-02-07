@@ -18,8 +18,5 @@ function printBoard(board) {
     console.log('  ------------------------------------------------');
   }
 }
-<<<<<<< HEAD
-=======
 
 module.exports = printBoard
->>>>>>> 79dfacb2c457ea388580201d033e689571c3987f
