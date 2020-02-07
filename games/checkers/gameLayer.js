@@ -60,7 +60,6 @@ function playGame(game){
     console.log('taken pieces red: ' + game.board.takenPiecesRed + ' and length is: ' + game.board.takenPiecesRed.length);
     console.log('taken pieces black: ' + game.board.takenPiecesBlack + ' and length is: ' + game.board.takenPiecesBlack.length);
 
-    game.board.takenPiecesBlack.length = 12;
     if (game.board.takenPiecesBlack.length === 12 || game.board.takenPiecesRed.length === 12) {
       game.isFinished = true;
     }
@@ -68,9 +67,9 @@ function playGame(game){
 
   if(game.board.takenPiecesBlack.length === 12) {
     if (game.player1.color === 'red') {
-      let winner = game.player1;
+      winner = game.player1;
     } else {
-      let winner = game.player2;
+      winner = game.player2;
     }
   }
 
